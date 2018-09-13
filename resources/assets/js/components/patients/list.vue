@@ -1,80 +1,97 @@
 <template>
-    <div >
-        <div class="table-responsive">
-            <vue-good-table :rows="rows" :columns="columns" :pagination-options="{
-                    enabled: true,
-                    perPage: 10,
-                    position: 'top',
-                    perPageDropdown: [10, 20, 50],
-                    nextLabel: 'Следваща',
-                    prevLabel: 'Предишна',
-                    rowsPerPageLabel: 'Редове на страница',
-                    ofLabel: 'от',
-                    pageLabel: 'страница', // for 'pages' mode
-                    allLabel: 'Всички'
-  }"
-                            :search-options="{
-                    enabled: true,
-                    placeholder: 'Търсене...',
-                  }"
-            ></vue-good-table>
-        </div>
-    </div>
+<v-container fluid>
+    <v-content>
+        <v-card>
+            <v-card-title>
+                <h1 class="display-3">Списък с пациенти:</h1>
+            </v-card-title>
+            <v-card-text>
+                <v-spacer></v-spacer>
+                <v-text-field
+                        v-model="search"
+                        append-icon="search"
+                        label="Search"
+                        single-line
+                ></v-text-field>
+                <v-data-table
+                        :headers="headers"
+                        :items="filteredList"
+                        :loading="this.loading"
+                >
+                    <template slot="items" slot-scope="props">
+                        <td @click="openPatient(props.item.pid, props.item)" style="font-size: 14px">
+                            <span class="text-lg-left">
+                                {{ props.item.fullName }}
+                            </span>
+                            <span class="text-lg-right">
+                                Брой изследвания: {{ props.item.studies.length }}
+                            </span>
+                        </td>
+
+                    </template>
+                    <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                        Your search for "{{ search }}" found no results.
+                    </v-alert>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
+    </v-content>
+</v-container>
 </template>
 
 <script>
-    import VueGoodTable from 'vue-good-table';
+
 
     export default {
-        name: "list",
-        props: ['table-data'],
+        name: 'patientList',
+
         data() {
             return {
-                columns: [
+                patientListSource: [],
+                search: '',
+                headers: [
                     {
-                        label: 'Име и Фамилия на пациента',
-                        filterable: true,
-                        field: this.name
-                    },
-                    {
-                        label: 'Рожденна дата/ЕГН',
-                        field: this.birthday,
-                        filterable: true
-                    },
-                    {
-                        label: 'more',
-                        html: true,
-                        field: this.bts
+                        text: 'Име и Фамилия',
+                        value: false
                     }
                 ],
-                rows: []
+                loading: false,
+                items: [],
+
             }
         },
-        mounted() {
 
-            this.rows = this.$props.tableData
-console.log(this.rows[0])
+       async mounted()  {
+           this.loading = true
+
+           axios.get('/api/patients/')
+                .then(
+                    (data) => {
+                        this.patientListSource = data.data
+                        this.loading = false
+                    }
+
+                )
+                .catch(
+                    (er) => console.log("error")
+                )
         },
         methods: {
-            name(val) {
-                return val['tags'][0].value
-            },
-            birthday(val) {
-                return val['tags'][1].value
-            },
-            bts(val) {
-                var buttons =
-                    '<div class="btn-group">'+
-                    '<a class="btn btn-info" href=' + val.publicId + '>Отвори този пациент</a>' +
-                    '<a class="btn btn-success" href=' + val.publicId + '>Генерирай код</a>' +
-                    '</div>'
+            openPatient(id, item) {
+                this.$router.push({ name: 'patient-show', params: { id: id, patientName: item.fullName }});
 
-                return buttons
+                this.$store.commit('setCurrentPatient', item)
+            }
+        },
+        computed: {
+            filteredList() {
+
+                return this.patientListSource.filter(patient => {
+
+                    return patient.fullName.toLowerCase().includes(this.search.toLowerCase())
+                })
+
             }
         }
     }
 </script>
-
-<style scoped>
-
-</style>

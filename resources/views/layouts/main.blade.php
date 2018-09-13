@@ -9,31 +9,51 @@
     <title>Laravel</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
 <body>
-<div class="container-fluid" id="app">
-    @if (Route::has('login'))
-        <div class="top-right links">
-            @auth
-                <a href="{{ url('/home') }}">Home</a>
-            @else
-                <a href="{{ route('login') }}">Login</a>
-                <a href="{{ route('register') }}">Register</a>
-            @endauth
-        </div>
-    @endif
+<div id="app">
+    {{--<v-app>--}}
+        {{--<v-navigation-drawer--}}
+                {{--fixed--}}
+                {{--:clipped="$vuetify.breakpoint.mdAndUp"--}}
+                {{--app--}}
+                {{--v-model="drawer"--}}
+        {{-->--}}
+            {{--<v-list>--}}
+                {{--<v-list-tile @click="router.push('/')">--}}
+                    {{--Списък с пациенти--}}
+                {{--</v-list-tile>--}}
+                {{--<v-list-tile>wef--}}
+                {{--</v-list-tile>--}}
+            {{--</v-list>--}}
+        {{--</v-navigation-drawer>--}}
+        {{--<v-toolbar--}}
+                {{--color="blue darken-3"--}}
+                {{--dark--}}
+                {{--app--}}
+                {{--:clipped-left="$vuetify.breakpoint.mdAndUp"--}}
+                {{--fixed--}}
+        {{-->--}}
+            {{--<v-toolbar-title style="width: 300px" class="ml-0 pl-3">--}}
+                {{--<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>--}}
+                {{--<span class="hidden-lg-only">ФДМ - Пловдив </span>--}}
+            {{--</v-toolbar-title>--}}
+        {{--</v-toolbar>--}}
+        {{--<router-view></router-view>--}}
 
-    <div class="content">
-        @yield('content')
-    </div>
-        <div class="row">
-            @yield('footer')
-        </div>
-
+    {{--</v-app>--}}
+    <app></app>
 </div>
+
 <script src="{{ asset('js/app.js') }}"></script>
+{{--TODO: Should be removed when app goes in production mode. Raganta 9.8.2018--}}
+{{--@if(config('app.env') == 'local')--}}
+    {{--<script src="http://localhost:35729/livereload.js"></script>--}}
+{{--@endif--}}
 </body>
 </html>

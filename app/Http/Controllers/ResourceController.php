@@ -57,7 +57,11 @@ class ResourceController extends Controller
     {
         $client = new Client();
 
-        $resource = Resource::where('publicId','=',$id)->get();
+        $resource = Resource::where('publicId','=',$id)->with('tags')->get();
+
+        $patient = collect(json_decode($resource[0]->tags));
+
+//        dd($resource[0]->tags);
 
         $studiesRaw = $client->get('http://localhost:8042/patients/' . $id . '/studies');
 
@@ -69,11 +73,12 @@ class ResourceController extends Controller
         $instances = $instancesRaw->getBody()->getContents();
         $instances = json_decode($instances);
 
+
 //        $respos = $client->get('http://localhost:8042/instances/' . $instances[0]['ID'] . '/preview');
 //        $im = $respos->getBody()->getContents();
 
 
-        return view('patients.show', compact('resource', 'studies','instances'));
+        return view('patients.show', compact('resource', 'studies','instances', 'patient'));
     }
 
     /**

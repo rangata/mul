@@ -1,7 +1,8 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: urandom
- * Date: 26.07.18
- * Time: 11:21
- */
+@extends('layouts.main')
+
+
+@section('content')
+<h3>ih
+</h3>
+    <image-studio :image-id="{{ $imageId }}"></image-studio>
+@endsection
